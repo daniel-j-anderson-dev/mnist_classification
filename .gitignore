@@ -1,0 +1,5 @@
+/target
+/training_images_pgm
+/training_images_ascii_art
+/test_images_pgm
+/test_images_ascii_art
