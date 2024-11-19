@@ -11,9 +11,35 @@ pub const TEST_IMAGE_COUNT: usize = 10000;
 pub const IMAGE_DATA_OFFSET: usize = 16;
 pub const IMAGE_WIDTH: usize = 28;
 pub const IMAGE_HEIGHT: usize = 28;
+pub const IMAGE_SIZE: usize = IMAGE_WIDTH * IMAGE_HEIGHT;
 
 pub const LABELS_MAGIC_NUMBER: u32 = 2049;
 pub const IMAGES_MAGIC_NUMBER: u32 = 2051;
+
+pub fn get_training_image(image_index: usize) -> &'static [u8; IMAGE_SIZE] {
+    assert!(
+        image_index < TRAINING_IMAGE_COUNT,
+        "image index is out of bounds"
+    );
+
+    let start = IMAGE_DATA_OFFSET + (image_index * IMAGE_SIZE);
+    let end = start + IMAGE_SIZE;
+    (&TRAINING_IMAGES[start..end])
+        .try_into()
+        .expect("end - start == IMAGE_SIZE")
+}
+pub fn get_test_image(image_index: usize) -> &'static [u8; IMAGE_SIZE] {
+    assert!(
+        image_index < TEST_IMAGE_COUNT,
+        "image index is out of bounds"
+    );
+
+    let start = IMAGE_DATA_OFFSET + (image_index * IMAGE_SIZE);
+    let end = start + IMAGE_SIZE;
+    (&TEST_IMAGES[start..end])
+        .try_into()
+        .expect("end - start == IMAGE_SIZE")
+}
 
 #[test]
 #[rustfmt::skip]
