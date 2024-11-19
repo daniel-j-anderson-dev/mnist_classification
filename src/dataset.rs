@@ -1,3 +1,5 @@
+pub mod display_images;
+
 pub const TRAINING_LABELS: &[u8] = include_bytes!("../../../MNIST/train-labels.idx1-ubyte");
 pub const TRAINING_IMAGES: &[u8] = include_bytes!("../../../MNIST/train-images.idx3-ubyte");
 pub const TEST_LABELS: &[u8] = include_bytes!("../../../MNIST/t10k-labels.idx1-ubyte");
