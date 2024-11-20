@@ -110,7 +110,14 @@ mod test {
         },
         TEST_IMAGE_COUNT, TRAINING_IMAGE_COUNT,
     };
-    use std::{fs::File, io::Write};
+    use std::{fs::File, io::Write, path::Path};
+
+    fn create_directory_if_doesnt_exist(path: impl AsRef<Path>) {
+        if path.as_ref().is_dir() {
+        } else {
+            std::fs::create_dir_all(path).unwrap();
+        }
+    }
 
     #[test]
     fn test_training_image_to_ascii_art() {
@@ -121,6 +128,8 @@ mod test {
             ascii_art_image_data
                 .push_str(&format!("{}\n", training_image_to_ascii_art(image_index)));
         }
+
+        create_directory_if_doesnt_exist("./training_images_ascii_art");
 
         File::options()
             .write(true)
@@ -141,6 +150,8 @@ mod test {
             ascii_art_image_data.push_str(&format!("{}\n", test_image_to_ascii_art(image_index)));
         }
 
+        create_directory_if_doesnt_exist("./test_images_ascii_art");
+
         File::options()
             .write(true)
             .truncate(true)
@@ -153,6 +164,8 @@ mod test {
 
     #[test]
     fn test_training_image_to_pgm() {
+        create_directory_if_doesnt_exist("./training_images_pgm");
+        
         for image_index in 0..TEST_IMAGE_COUNT {
             let pgm_image_data = training_image_to_pgm(image_index);
 
@@ -172,6 +185,8 @@ mod test {
 
     #[test]
     fn test_test_image_to_pgm() {
+        create_directory_if_doesnt_exist("./test_images_pgm");
+
         for image_index in 0..TEST_IMAGE_COUNT {
             let pgm_image_data = test_image_to_pgm(image_index);
 
