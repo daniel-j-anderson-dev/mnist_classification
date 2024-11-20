@@ -1,3 +1,5 @@
+pub mod activation_functions;
+
 #[derive(Debug, Clone)]
 pub struct NeuralNetwork {
     layers: Box<[Layer]>,
@@ -11,16 +13,19 @@ impl NeuralNetwork {
 
         let layers = (0..layer_sizes.len())
             .map(|layer_index| {
+                // initialize activations to 0.0 since no passes have been made yet
+                let activations = std::iter::repeat(0.0)
+                    .take(layer_sizes[layer_index])
+                    .collect();
+
                 if layer_index == 0 {
                     Layer {
-                        number_of_nodes: layer_sizes[layer_index],
                         weights: Box::default(),
                         biases: Box::default(),
-                        activations: Box::default(),
+                        activations,
                     }
                 } else {
                     Layer {
-                        number_of_nodes: layer_sizes[layer_index],
                         // generate a random weight for every combination of node indexes between the current row and the previous row
                         weights: (0..layer_sizes[layer_index])
                             .map(|_current_layer_node_index| {
@@ -35,10 +40,7 @@ impl NeuralNetwork {
                             .take(layer_sizes[layer_index])
                             .collect(),
 
-                        // initialize activations to 0.0 since no passes have been made yet
-                        activations: std::iter::repeat(0.0)
-                            .take(layer_sizes[layer_index])
-                            .collect(),
+                        activations,
                     }
                 }
             })
@@ -60,5 +62,9 @@ pub struct Layer {
     weights: Box<[Box<[f64]>]>,
     biases: Box<[f64]>,
     activations: Box<[f64]>,
-    number_of_nodes: usize,
+}
+impl Layer {
+    pub const fn number_of_nodes(&self) -> usize {
+        self.activations.len()
+    }
 }
