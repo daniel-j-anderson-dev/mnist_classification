@@ -65,6 +65,7 @@ impl NeuralNetwork {
                 layer.activations[node_index] = rectified_linear_unit(weighted_sum + bias);
             }
 
+            // pass activations to the next layer
             activations = &layer.activations;
         }
 
