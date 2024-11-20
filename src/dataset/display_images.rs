@@ -169,7 +169,7 @@ mod test {
                 .unwrap();
         }
     }
-    
+
     #[test]
     fn test_test_image_to_pgm() {
         for image_index in 0..TEST_IMAGE_COUNT {
