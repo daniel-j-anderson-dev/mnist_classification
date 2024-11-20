@@ -71,7 +71,7 @@ mod test {
         assert_eq!(get_training_label(0), 5);
         assert_eq!(get_training_label(59999), 8);
     }
-    
+
     #[test]
     fn test_get_test_label() {
         assert_eq!(get_test_label(0), 7);
