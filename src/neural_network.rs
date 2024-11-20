@@ -9,14 +9,18 @@ impl NeuralNetwork {
         let layer_sizes = layer_sizes.as_ref();
 
         NeuralNetwork {
-            layers: (1..layer_sizes.len())
+            layers: (0..layer_sizes.len())
                 .map(|layer_index| Layer {
                     // generate a random weight for every combination of node indexes between the current row and the previous row
                     weights: (0..layer_sizes[layer_index])
                         .map(|_current_layer_node_index| {
-                            (0..layer_sizes[layer_index - 1])
-                                .map(|_previous_layer_node_index| rng.gen_range(-1.0..1.0))
-                                .collect()
+                            if layer_index == 0 {
+                                Box::new([]) as _
+                            } else {
+                                (0..layer_sizes[layer_index - 1])
+                                    .map(|_previous_layer_node_index| rng.gen_range(-1.0..1.0))
+                                    .collect()
+                            }
                         })
                         .collect(),
 
