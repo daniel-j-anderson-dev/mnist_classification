@@ -1,6 +1,13 @@
 pub fn rectified_linear_unit(x: f64) -> f64 {
     x.max(0.0)
 }
+pub fn rectified_linear_unit_derivative(x: f64) -> f64 {
+    if x <= 0.0 {
+        0.0
+    } else {
+        1.0
+    }
+}
 
 pub fn soft_max(mut z: impl AsMut<[f64]>) {
     let z = z.as_mut();
