@@ -35,6 +35,10 @@ pub fn get_training_image(image_index: usize) -> &'static [u8; IMAGE_SIZE] {
         .try_into()
         .expect("image_range.len() == IMAGE_SIZE")
 }
+pub fn get_training_image_f64(image_index: usize) -> [f64; IMAGE_SIZE] {
+    let image = get_training_image(image_index);
+    std::array::from_fn(|i| image[i] as f64 / 255.0)
+}
 
 pub fn get_test_image(image_index: usize) -> &'static [u8; IMAGE_SIZE] {
     assert!(
@@ -46,6 +50,10 @@ pub fn get_test_image(image_index: usize) -> &'static [u8; IMAGE_SIZE] {
     (&TEST_IMAGES[image_range])
         .try_into()
         .expect("image_range.len() == IMAGE_SIZE")
+}
+pub fn get_test_image_f64(image_index: usize) -> [f64; IMAGE_SIZE] {
+    let image = get_test_image(image_index);
+    std::array::from_fn(|i| image[i] as f64 / 255.0)
 }
 
 pub fn get_training_label(image_index: usize) -> u8 {
@@ -63,7 +71,8 @@ mod test {
     use crate::dataset::{
         get_test_image, get_test_label, get_training_image, get_training_label,
         IMAGES_MAGIC_NUMBER, IMAGE_HEIGHT, IMAGE_WIDTH, LABELS_MAGIC_NUMBER, TEST_IMAGES,
-        TEST_IMAGE_COUNT, TEST_LABELS, TRAINING_IMAGES, TRAINING_IMAGE_COUNT, TRAINING_LABELS,
+        TEST_LABELS, TRAINING_IMAGES, TRAINING_LABELS, TEST_IMAGE_COUNT,
+        TRAINING_IMAGE_COUNT,
     };
 
     #[test]
