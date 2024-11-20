@@ -1,9 +1,9 @@
 pub mod display_images;
 
-pub const TRAINING_LABELS: &[u8] = include_bytes!("../../../MNIST/train-labels.idx1-ubyte");
-pub const TRAINING_IMAGES: &[u8] = include_bytes!("../../../MNIST/train-images.idx3-ubyte");
-pub const TEST_LABELS: &[u8] = include_bytes!("../../../MNIST/t10k-labels.idx1-ubyte");
-pub const TEST_IMAGES: &[u8] = include_bytes!("../../../MNIST/t10k-images.idx3-ubyte");
+pub const TRAINING_LABELS: &[u8] = include_bytes!("../dataset/train-labels.idx1-ubyte");
+pub const TRAINING_IMAGES: &[u8] = include_bytes!("../dataset/train-images.idx3-ubyte");
+pub const TEST_LABELS: &[u8] = include_bytes!("../dataset/t10k-labels.idx1-ubyte");
+pub const TEST_IMAGES: &[u8] = include_bytes!("../dataset/t10k-images.idx3-ubyte");
 
 pub const TRAINING_IMAGE_COUNT: usize = 60000;
 pub const TEST_IMAGE_COUNT: usize = 10000;
