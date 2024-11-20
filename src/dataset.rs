@@ -56,14 +56,14 @@ pub fn get_test_image_f64(image_index: usize) -> [f64; IMAGE_SIZE] {
     std::array::from_fn(|i| image[i] as f64 / 255.0)
 }
 
-pub fn get_training_label(image_index: usize) -> u8 {
+pub fn get_training_label(image_index: usize) -> usize {
     assert!(image_index < TRAINING_IMAGE_COUNT);
-    TRAINING_LABELS[image_index + IMAGE_LABEL_OFFSET]
+    TRAINING_LABELS[image_index + IMAGE_LABEL_OFFSET] as _
 }
 
-pub fn get_test_label(image_index: usize) -> u8 {
+pub fn get_test_label(image_index: usize) -> usize {
     assert!(image_index < TEST_IMAGE_COUNT);
-    TEST_LABELS[image_index + IMAGE_LABEL_OFFSET]
+    TEST_LABELS[image_index + IMAGE_LABEL_OFFSET] as _
 }
 
 #[cfg(test)]
