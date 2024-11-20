@@ -110,6 +110,7 @@ mod test {
         },
         TEST_IMAGE_COUNT, TRAINING_IMAGE_COUNT,
     };
+    use std::{fs::File, io::Write};
 
     #[test]
     fn test_training_image_to_ascii_art() {
@@ -130,6 +131,7 @@ mod test {
             .write_all(ascii_art_image_data.as_bytes())
             .unwrap();
     }
+
     #[test]
     fn test_test_image_to_ascii_art() {
         use std::{fs::File, io::Write};
@@ -151,8 +153,6 @@ mod test {
 
     #[test]
     fn test_training_image_to_pgm() {
-        use std::{fs::File, io::Write};
-
         for image_index in 0..TEST_IMAGE_COUNT {
             let pgm_image_data = training_image_to_pgm(image_index);
 
@@ -169,10 +169,9 @@ mod test {
                 .unwrap();
         }
     }
+    
     #[test]
     fn test_test_image_to_pgm() {
-        use std::{fs::File, io::Write};
-
         for image_index in 0..TEST_IMAGE_COUNT {
             let pgm_image_data = test_image_to_pgm(image_index);
 
