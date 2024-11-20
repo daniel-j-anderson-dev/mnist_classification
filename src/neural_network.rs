@@ -62,4 +62,3 @@ pub struct Layer {
     activations: Box<[f64]>,
     number_of_nodes: usize,
 }
-

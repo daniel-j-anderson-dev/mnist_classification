@@ -165,7 +165,6 @@ mod test {
     #[test]
     fn test_training_image_to_pgm() {
         create_directory_if_doesnt_exist("./training_images_pgm");
-        
         for image_index in 0..TEST_IMAGE_COUNT {
             let pgm_image_data = training_image_to_pgm(image_index);
 
