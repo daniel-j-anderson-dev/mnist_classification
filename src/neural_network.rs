@@ -11,44 +11,34 @@ impl NeuralNetwork {
 
         let layer_sizes = layer_sizes.as_ref();
 
-        let layers = (0..layer_sizes.len())
+        let layers = (1..layer_sizes.len())
             .map(|layer_index| {
-                // initialize activations to 0.0 since no passes have been made yet
-                let activations = std::iter::repeat(0.0)
-                    .take(layer_sizes[layer_index])
-                    .collect();
+                Layer {
+                    // generate a random weight for every combination of node indexes between the current row and the previous row
+                    weights: (0..layer_sizes[layer_index])
+                        .map(|_current_layer_node_index| {
+                            (0..layer_sizes[layer_index - 1])
+                                .map(|_previous_layer_node_index| rng.gen_range(-1.0..1.0))
+                                .collect()
+                        })
+                        .collect(),
 
-                if layer_index == 0 {
-                    Layer {
-                        weights: Box::default(),
-                        biases: Box::default(),
-                        activations,
-                    }
-                } else {
-                    Layer {
-                        // generate a random weight for every combination of node indexes between the current row and the previous row
-                        weights: (0..layer_sizes[layer_index])
-                            .map(|_current_layer_node_index| {
-                                (0..layer_sizes[layer_index - 1])
-                                    .map(|_previous_layer_node_index| rng.gen_range(-1.0..1.0))
-                                    .collect()
-                            })
-                            .collect(),
+                    // initialize biases to 0.0
+                    biases: std::iter::repeat(0.0)
+                        .take(layer_sizes[layer_index])
+                        .collect(),
 
-                        // initialize biases to 0.0
-                        biases: std::iter::repeat(0.0)
-                            .take(layer_sizes[layer_index])
-                            .collect(),
-
-                        activations,
-                    }
+                    // initialize activations to 0.0 since no passes have been made yet
+                    activations: std::iter::repeat(0.0)
+                        .take(layer_sizes[layer_index])
+                        .collect(),
                 }
             })
             .collect();
 
         NeuralNetwork { layers }
     }
-    pub fn forward_pass(&mut self) {
+    pub fn forward_pass(&mut self, inputs: impl AsRef<[f64]>) {
         unimplemented!()
     }
     pub fn backward_pass(&mut self) {
