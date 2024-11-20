@@ -2,10 +2,7 @@ pub struct NeuralNetwork {
     layers: Box<[Layer]>,
 }
 impl NeuralNetwork {
-    pub fn new<Arr>(layer_sizes: Arr) -> Self
-    where
-        Arr: AsRef<[usize]>,
-    {
+    pub fn new(layer_sizes: impl AsRef<[usize]>) -> Self {
         use rand::Rng;
         let mut rng = rand::thread_rng();
 
