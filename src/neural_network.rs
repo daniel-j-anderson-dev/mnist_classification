@@ -68,3 +68,8 @@ impl Layer {
         self.activations.len()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::neural_network::{Layer, NeuralNetwork};
+}
