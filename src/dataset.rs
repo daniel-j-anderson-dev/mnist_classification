@@ -71,8 +71,7 @@ mod test {
     use crate::dataset::{
         get_test_image, get_test_label, get_training_image, get_training_label,
         IMAGES_MAGIC_NUMBER, IMAGE_HEIGHT, IMAGE_WIDTH, LABELS_MAGIC_NUMBER, TEST_IMAGES,
-        TEST_LABELS, TRAINING_IMAGES, TRAINING_LABELS, TEST_IMAGE_COUNT,
-        TRAINING_IMAGE_COUNT,
+        TEST_IMAGE_COUNT, TEST_LABELS, TRAINING_IMAGES, TRAINING_IMAGE_COUNT, TRAINING_LABELS,
     };
 
     #[test]

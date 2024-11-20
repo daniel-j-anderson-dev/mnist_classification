@@ -1,6 +1,4 @@
-use crate::dataset::{
-    IMAGE_DATA_OFFSET, IMAGE_HEIGHT, IMAGE_WIDTH, TEST_IMAGES, TRAINING_IMAGES,
-};
+use crate::dataset::{IMAGE_DATA_OFFSET, IMAGE_HEIGHT, IMAGE_WIDTH, TEST_IMAGES, TRAINING_IMAGES};
 
 pub fn training_image_to_ascii_art(image_index: usize) -> String {
     image_to_ascii_art(
