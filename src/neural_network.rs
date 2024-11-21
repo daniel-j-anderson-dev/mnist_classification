@@ -96,7 +96,7 @@ impl NeuralNetwork {
 
         assert_eq!(
             targets.len(),
-            self.last_layer().activations.len(),
+            self.last_layer().number_of_neurons(),
             "the number of targets must be equal to the number of neurons in the final layer"
         );
 
@@ -145,7 +145,7 @@ impl NeuralNetwork {
                 let layer = &self.layers[layer_index];
                 let previous_layer = &self.layers[layer_index - 1];
 
-                deltas = (0..previous_layer.activations.len())
+                deltas = (0..previous_layer.number_of_neurons())
                     .map(|previous_layer_neuron_index| {
                         layer
                             .weights
@@ -172,7 +172,7 @@ pub struct Layer {
     activations: Box<[f64]>,
 }
 impl Layer {
-    pub const fn number_of_nodes(&self) -> usize {
+    pub const fn number_of_neurons(&self) -> usize {
         self.activations.len()
     }
 }
