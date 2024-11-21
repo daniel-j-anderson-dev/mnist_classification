@@ -158,6 +158,64 @@ impl NeuralNetwork {
             }
         }
     }
+    
+    pub fn train<O1, I1, O2, I2>(
+        &mut self,
+        inputs: O1,
+        expected_outputs: O2,
+        epochs: usize,
+        learning_rate: f64,
+    ) where
+        O1: AsRef<[I1]>,
+        I1: AsRef<[f64]>,
+        O2: AsRef<[I2]>,
+        I2: AsRef<[f64]>,
+    {
+        let inputs = inputs.as_ref();
+        let expected_outputs = expected_outputs.as_ref();
+
+        assert_eq!(
+            inputs.len(),
+            expected_outputs.len(),
+            "Must have the same number of inputs and expected outputs"
+        );
+
+        for epoch_index in 0..epochs {
+            let mut total_loss = 0.0;
+
+            for (input, expected_output) in inputs
+                .iter()
+                .zip(expected_outputs)
+                .map(|(i, eo)| (i.as_ref(), eo.as_ref()))
+            {
+                self.forward_propagation(input);
+
+                // calculate loss
+                let actual_output = &self.last_layer().activations;
+                assert_eq!(
+                    actual_output.len(),
+                    expected_outputs.len(),
+                    "expected output and actual output have different sizes"
+                );
+
+                let sample_loss = actual_output
+                    .iter()
+                    .zip(expected_output)
+                    .map(|(actual, expected)| (actual - expected).powi(2))
+                    .sum::<f64>();
+                total_loss += sample_loss / expected_output.len() as f64;
+
+                self.backward_propagation(expected_output, learning_rate);
+            }
+
+            println!(
+                "Epoch {}/{} Loss: {}",
+                epoch_index,
+                epoch_index + 1,
+                total_loss / inputs.len() as f64
+            )
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
