@@ -161,8 +161,6 @@ impl NeuralNetwork {
                     .collect();
             }
         }
-
-        unimplemented!()
     }
 }
 
