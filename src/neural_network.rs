@@ -5,7 +5,7 @@ pub mod activation_functions;
 #[derive(Debug, Clone)]
 pub struct NeuralNetwork {
     layers: Box<[Layer]>,
-    input_node_count: usize,
+    input_neuron_count: usize,
 }
 impl NeuralNetwork {
     /// # Panics
@@ -22,7 +22,7 @@ impl NeuralNetwork {
         let layers = (1..layer_sizes.len())
             .map(|layer_index| {
                 Layer {
-                    // generate a random weight for every combination of node indexes between the current row and the previous row
+                    // generate a random weight for every combination of neuron indexes between the current row and the previous row
                     weights: (0..layer_sizes[layer_index])
                         .map(|_current_layer_neuron_index| {
                             (0..layer_sizes[layer_index - 1])
@@ -46,7 +46,7 @@ impl NeuralNetwork {
 
         NeuralNetwork {
             layers,
-            input_node_count: layer_sizes[0],
+            input_neuron_count: layer_sizes[0],
         }
     }
 
@@ -64,8 +64,8 @@ impl NeuralNetwork {
     pub fn forward_propagation(&mut self, inputs: impl AsRef<[f64]>) {
         let mut previous_layer_activations = inputs.as_ref();
         assert!(
-            previous_layer_activations.len() == self.input_node_count,
-            "there must be exactly self.input_node_count inputs"
+            previous_layer_activations.len() == self.input_neuron_count,
+            "there must be exactly self.input_neuron_count inputs"
         );
 
         for layer in self.layers.iter_mut() {
@@ -87,11 +87,7 @@ impl NeuralNetwork {
         self.last_layer_mut().activations.soft_max();
     }
 
-    pub fn backward_propagation(
-        &mut self,
-        targets: impl AsRef<[f64]>,
-        learning_rate: f64,
-    ) {
+    pub fn backward_propagation(&mut self, targets: impl AsRef<[f64]>, learning_rate: f64) {
         let targets = targets.as_ref();
 
         assert_eq!(
