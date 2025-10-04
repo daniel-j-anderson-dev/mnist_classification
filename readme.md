@@ -1,9 +1,18 @@
+# Usage
+add the following to your `Cargo.toml`
+```toml
+[dependencies]
+mnist_dataset = { git = "https://github.com/daniel-j-anderson-dev/mnist_dataset.git" }
+```
+
+# Information
+
 dataset downloaded from: https://github.com/mrgloom/MNIST-dataset-in-different-formats/tree/master/data/Original%20dataset
 
 information about the dataset: https://yann.lecun.com/exdb/mnist/ (dead link). 
 
 From the Wayback Machine:
-# FILE FORMATS FOR THE MNIST DATABASE
+## FILE FORMATS FOR THE MNIST DATABASE
 The data is stored in a very simple file format designed for storing vectors and multidimensional matrices. General info on this format is given at the end of this page, but you don't need to read that to use the data files.
 
 All the integers in the files are stored in the MSB first (high endian) format used by most non-Intel processors. Users of Intel processors and other low-endian machines must flip the bytes of the header.
@@ -19,7 +28,7 @@ The training set contains `60000` examples, and the test set `10000` examples.
 
 The first `5000` examples of the test set are taken from the original NIST training set. The last `5000` are taken from the original NIST test set. The first `5000` are cleaner and easier than the last `5000`.
 
-## TRAINING SET LABEL FILE (`train-labels-idx1-ubyte`):
+### TRAINING SET LABEL FILE (`train-labels-idx1-ubyte`):
 | offset | type           | value            | description              |
 |--------|----------------|------------------|--------------------------|
 | 0000   | 32 bit integer | 0x00000801(2049) | magic number (MSB first) |
@@ -31,7 +40,7 @@ The first `5000` examples of the test set are taken from the original NIST train
 
 The labels values are `0` to `9`.
 
-## TRAINING SET IMAGE FILE (`train-images-idx3-ubyte`):
+### TRAINING SET IMAGE FILE (`train-images-idx3-ubyte`):
 | offset | type           | value            | description       |
 |--------|----------------|------------------|-------------------|
 | 0000   | 32 bit integer | 0x00000803(2051) | magic number      |
@@ -45,7 +54,7 @@ The labels values are `0` to `9`.
                 
 Pixels are organized row-wise. Pixel values are `0` to `255`. `0` means background (white), `255` means foreground (black).
 
-## TEST SET LABEL FILE (`t10k-labels-idx1-ubyte`):
+### TEST SET LABEL FILE (`t10k-labels-idx1-ubyte`):
 | offset | type           | value            | description              |
 |--------|----------------|------------------|--------------------------|
 | 0000   | 32 bit integer | 0x00000801(2049) | magic number (MSB first) |
@@ -57,7 +66,7 @@ Pixels are organized row-wise. Pixel values are `0` to `255`. `0` means backgrou
 
 The labels values are `0` to `9`.
 
-## TEST SET IMAGE FILE (`t10k-images-idx3-ubyte`):
+### TEST SET IMAGE FILE (`t10k-images-idx3-ubyte`):
 | offset | type           | value            | description       |
 |--------|----------------|------------------|-------------------|
 | 0000   | 32 bit integer | 0x00000803(2051) | magic number      |
@@ -71,7 +80,7 @@ The labels values are `0` to `9`.
 
 Pixels are organized row-wise. Pixel values are `0` to `255`. `0` means background (white), `255` means foreground (black).
 
-# THE IDX FILE FORMAT
+## THE IDX FILE FORMAT
 the IDX file format is a simple format for vectors and multidimensional matrices of various numerical types.
 
 The basic format is:
