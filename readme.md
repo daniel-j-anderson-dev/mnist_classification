@@ -1,9 +1,25 @@
+This crate gives access to image data and label data from the MNIST dataset without having to worry about the dataset's file formats
+
 # Usage
 add the following to your `Cargo.toml`
 ```toml
 [dependencies]
 mnist_dataset = { git = "https://github.com/daniel-j-anderson-dev/mnist_dataset.git" }
 ```
+
+The dataset is accessed through the following types, which are handles to a specific image/label.
+  - `TrainingImage`
+  - `TrainingLabel`
+  - `TestImage`
+  - `TestLabel`
+
+Accessing the actual image data/image label is definiens using these traits
+  - `Image`
+    - implemented by `TrainingImage` and `TestImage`
+    - use `image.as_bytes()` to get the `784` row major bytes of image data specified by an image handle
+  - `Label`
+    - implemented by `TrainingLabel` and `TestLabel`
+    - use `label.digit_class()` to get the `DigitClass` specified by a label handle
 
 # Information
 
