@@ -10,13 +10,17 @@ pub mod training_label;
 pub mod visualization;
 
 pub use crate::{
-    digit_class::DigitClass, image::*, label::*, test_image::TestImage, test_label::TestLabel,
-    training_image::TrainingImage, training_label::TrainingLabel,
+    digit_class::DigitClass, image::Image, label::Label, test_image::TestImage,
+    test_label::TestLabel, training_image::TrainingImage, training_label::TrainingLabel,
 };
 
 #[cfg(test)]
 mod test {
-    use super::*;
+    use crate::{
+        image::{IMAGE_HEIGHT, IMAGE_MAGIC_NUMBER, IMAGE_WIDTH},
+        label::LABEL_MAGIC_NUMBER,
+        Image, Label, TestImage, TestLabel, TrainingImage, TrainingLabel,
+    };
 
     const fn u32_from_big_endian_bytes(bytes: &[u8]) -> u32 {
         (bytes[0] as u32) << 24
@@ -29,7 +33,7 @@ mod test {
     fn test_image_metadata() {
         assert_eq!(
             u32_from_big_endian_bytes(&TestImage::RAW_DATA[0..4]),
-            IMAGES_MAGIC_NUMBER
+            IMAGE_MAGIC_NUMBER
         );
         assert_eq!(
             u32_from_big_endian_bytes(&TestImage::RAW_DATA[4..8]),
@@ -49,7 +53,7 @@ mod test {
     fn test_label_metadata() {
         assert_eq!(
             u32_from_big_endian_bytes(&TestLabel::RAW_DATA[0..4]),
-            LABELS_MAGIC_NUMBER
+            LABEL_MAGIC_NUMBER
         );
         assert_eq!(
             u32_from_big_endian_bytes(&TestLabel::RAW_DATA[4..8]),
@@ -61,7 +65,7 @@ mod test {
     fn training_image_metadata() {
         assert_eq!(
             u32_from_big_endian_bytes(&TrainingImage::RAW_DATA[0..4]),
-            IMAGES_MAGIC_NUMBER
+            IMAGE_MAGIC_NUMBER
         );
         assert_eq!(
             u32_from_big_endian_bytes(&TrainingImage::RAW_DATA[4..8]),
@@ -81,7 +85,7 @@ mod test {
     fn training_label_metadata() {
         assert_eq!(
             u32_from_big_endian_bytes(&TrainingLabel::RAW_DATA[0..4]),
-            LABELS_MAGIC_NUMBER
+            LABEL_MAGIC_NUMBER
         );
         assert_eq!(
             u32_from_big_endian_bytes(&TrainingLabel::RAW_DATA[4..8]),
