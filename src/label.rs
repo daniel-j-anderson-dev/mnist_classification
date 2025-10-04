@@ -24,7 +24,7 @@ pub trait Label: Sized {
             .expect("all bytes after LABEL_OFFSET are in range 0..=9")
     }
 
-    fn one_hot_encode_from_index(index: usize) -> Option<[f64; DigitClass::COUNT]> {
+    fn one_hot_encode_from_index(index: usize) -> Option<[f32; DigitClass::COUNT]> {
         Self::from_index(index).map(|label| label.digit_class().one_hot_encode())
     }
 
@@ -32,7 +32,7 @@ pub trait Label: Sized {
         (0..Self::COUNT).filter_map(Self::from_index)
     }
 
-    fn all_one_hot_encoded() -> impl Iterator<Item = [f64; DigitClass::COUNT]> {
+    fn all_one_hot_encoded() -> impl Iterator<Item = [f32; DigitClass::COUNT]> {
         (0..Self::COUNT).filter_map(Self::one_hot_encode_from_index)
     }
 }

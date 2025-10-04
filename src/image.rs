@@ -41,12 +41,12 @@ pub trait Image: Sized {
     }
 
     /// Returns the image data where each pixel scaled to be on the range `0.0..=1.0`
-    fn normalized(&self) -> [f64; IMAGE_SIZE] {
+    fn normalized(&self) -> [f32; IMAGE_SIZE] {
         let image_data = self.as_bytes();
-        core::array::from_fn::<_, IMAGE_SIZE, _>(|i| image_data[i] as f64 / 255.0)
+        core::array::from_fn::<_, IMAGE_SIZE, _>(|i| image_data[i] as f32 / 255.0)
     }
 
-    fn normalized_from_index(index: usize) -> Option<[f64; IMAGE_SIZE]> {
+    fn normalized_from_index(index: usize) -> Option<[f32; IMAGE_SIZE]> {
         Self::from_index(index).map(|s| s.normalized())
     }
 
@@ -54,7 +54,7 @@ pub trait Image: Sized {
         (0..Self::COUNT).filter_map(Self::from_index)
     }
 
-    fn all_normalized() -> impl Iterator<Item = [f64; IMAGE_SIZE]> {
+    fn all_normalized() -> impl Iterator<Item = [f32; IMAGE_SIZE]> {
         (0..Self::COUNT).filter_map(Self::normalized_from_index)
     }
 }

@@ -31,7 +31,7 @@ impl DigitClass {
         }
     }
     /// see https://en.wikipedia.org/wiki/One-hot
-    pub const fn one_hot_encode(self) -> [f64; 10] {
+    pub const fn one_hot_encode(self) -> [f32; 10] {
         let mut encoded = [0.0; 10];
         encoded[self as usize] = 1.0;
         encoded
