@@ -11,7 +11,7 @@ pub const IMAGE_HEIGHT: usize = 28;
 pub const IMAGE_SIZE: usize = IMAGE_WIDTH * IMAGE_HEIGHT;
 
 /// Each images file starts with `2051`
-pub const IMAGES_MAGIC_NUMBER: u32 = 2051;
+pub const IMAGE_MAGIC_NUMBER: u32 = 2051;
 
 /// Returns `(start, end)` 
 pub const fn calculate_image_bounds(image_index: usize) -> (usize, usize) {
@@ -32,7 +32,7 @@ pub trait Image: Sized {
     fn from_index(index: usize) -> Option<Self> {
         (index < Self::COUNT).then(|| unsafe { Self::from_index_unchecked(index) })
     }
-    
+
     fn as_bytes(&self) -> &'static [u8; IMAGE_SIZE] {
         let (start, end) = calculate_image_bounds(self.index());
         Self::RAW_DATA[start..end]

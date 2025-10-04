@@ -3,7 +3,7 @@ use crate::DigitClass;
 /// The label data starts at byte `8` for the [TrainingLabel]s and [TestLabel]s
 pub const LABEL_OFFSET: usize = 8;
 /// Each labels file starts with `2049`
-pub const LABELS_MAGIC_NUMBER: u32 = 2049;
+pub const LABEL_MAGIC_NUMBER: u32 = 2049;
 
 /// A handle to a specific label from the MNIST dataset
 pub trait Label: Sized {
