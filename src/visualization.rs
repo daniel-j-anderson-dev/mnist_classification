@@ -33,7 +33,7 @@ fn to_string(
 
 #[cfg(test)]
 mod test {
-    use crate::{display::*, Image, TestImage, TrainingImage};
+    use crate::{visualization::*, Image, TestImage, TrainingImage};
     use std::{fs::File, io::Write, path::Path};
 
     fn create_directory_if_doesnt_exist(path: impl AsRef<Path>) {
