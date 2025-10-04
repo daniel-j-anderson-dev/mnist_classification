@@ -43,6 +43,11 @@ mod test {
         }
     }
 
+    const TRAINING_IMAGE_ASCII_ART_DIR: &str = "./training_images_ascii_art";
+    const TEST_IMAGE_ASCII_ART_DIR: &str = "./test_images_ascii_art";
+    const TRAINING_IMAGE_PGM_DIR: &str = "./training_images_pgm";
+    const TEST_IMAGE_PGM_DIR: &str = "./test_images_pgm";
+
     #[test]
     fn training_image_ascii_art() {
         use std::{fs::File, io::Write};
@@ -51,13 +56,16 @@ mod test {
             .flat_map(|i| [to_ascii_art(i), "\n".into()])
             .collect::<String>();
 
-        create_directory_if_doesnt_exist("./training_images_ascii_art");
+        create_directory_if_doesnt_exist(TRAINING_IMAGE_ASCII_ART_DIR);
 
         File::options()
             .write(true)
             .truncate(true)
             .create(true)
-            .open("./training_images_ascii_art/training_images_ascii_art.txt")
+            .open(format!(
+                "{}/training_images_ascii_art.txt",
+                TRAINING_IMAGE_ASCII_ART_DIR
+            ))
             .unwrap()
             .write_all(ascii_art_image_data.as_bytes())
             .unwrap();
@@ -71,13 +79,16 @@ mod test {
             .flat_map(|i| [to_ascii_art(i), "\n".into()])
             .collect::<String>();
 
-        create_directory_if_doesnt_exist("./test_images_ascii_art");
+        create_directory_if_doesnt_exist(TEST_IMAGE_ASCII_ART_DIR);
 
         File::options()
             .write(true)
             .truncate(true)
             .create(true)
-            .open("./test_images_ascii_art/test_images_ascii_art.txt")
+            .open(format!(
+                "{}/test_images_ascii_art.txt",
+                TEST_IMAGE_ASCII_ART_DIR
+            ))
             .unwrap()
             .write_all(ascii_art_image_data.as_bytes())
             .unwrap();
@@ -85,10 +96,10 @@ mod test {
 
     #[test]
     fn training_images_pgm() {
-        create_directory_if_doesnt_exist("./training_images_pgm");
+        create_directory_if_doesnt_exist(TRAINING_IMAGE_PGM_DIR);
         for image in TestImage::all() {
             let index = image.index();
-            let image_path = format!("./training_images_pgm/training_image_{}.pgm", index);
+            let image_path = format!("{}/training_image_{}.pgm", TRAINING_IMAGE_PGM_DIR, index);
             let image_data = to_pgm(image);
 
             File::options()
@@ -104,11 +115,11 @@ mod test {
 
     #[test]
     fn test_images_pgm() {
-        create_directory_if_doesnt_exist("./test_images_pgm");
+        create_directory_if_doesnt_exist(TEST_IMAGE_PGM_DIR);
 
         for image in TestImage::all() {
             let image_index = image.index();
-            let image_path = format!("./test_images_pgm/test_image_{}.pgm", image_index);
+            let image_path = format!("{}/test_image_{}.pgm", TEST_IMAGE_PGM_DIR, image_index);
             let image_data = to_pgm(image);
 
             File::options()
