@@ -3,7 +3,7 @@ use crate::{image::IMAGE_WIDTH, Image};
 pub fn to_ascii_art(image: impl Image) -> String {
     let index = image.index();
     to_string(image, format!("{}\n", index), |&byte| {
-        String::from(if byte >= 230 { "@" } else { "." })
+        if byte >= 230 { "@" } else { "." }.into()
     })
 }
 
