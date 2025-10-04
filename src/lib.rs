@@ -96,26 +96,42 @@
 //! - The sizes in each dimension are **4-byte** integers (**MSB first**, high endian, like in most non-Intel processors).
 //! - The data is stored like in a C array, i.e. the index in the last dimension changes the fastest.
 
-pub mod digit_class;
 pub mod image;
 pub mod label;
-pub mod test_image;
-pub mod test_label;
-pub mod training_image;
-pub mod training_label;
 pub mod visualization;
 
-pub use crate::{
-    digit_class::DigitClass, image::Image, label::Label, test_image::TestImage,
-    test_label::TestLabel, training_image::TrainingImage, training_label::TrainingLabel,
-};
+pub use crate::{image::*, label::*};
+
+pub trait DataSet {
+    type Image: Image;
+    type Label: Label;
+    fn images() -> impl Iterator<Item = [f32; IMAGE_SIZE]> {
+        Self::Image::all().map(Image::as_bytes).map(normalize_bytes)
+    }
+    fn labels() -> impl Iterator<Item = [f32; DigitClass::COUNT]> {
+        Self::Label::all()
+            .map(Label::digit_class)
+            .map(DigitClass::one_hot_encode)
+    }
+}
+pub enum TrainingData {}
+impl DataSet for TrainingData {
+    type Image = TrainingImage;
+    type Label = TrainingLabel;
+}
+pub enum TestData {}
+impl DataSet for TestData {
+    type Image = TestImage;
+    type Label = TestLabel;
+}
 
 #[cfg(test)]
 mod test {
     use crate::{
+        DataSet, Image, Label, TestData, TestImage, TestLabel, TrainingData, TrainingImage,
+        TrainingLabel,
         image::{IMAGE_HEIGHT, IMAGE_MAGIC_NUMBER, IMAGE_WIDTH},
         label::LABEL_MAGIC_NUMBER,
-        Image, Label, TestImage, TestLabel, TrainingImage, TrainingLabel,
     };
 
     const fn u32_from_big_endian_bytes(bytes: &[u8]) -> u32 {
@@ -187,5 +203,13 @@ mod test {
             u32_from_big_endian_bytes(&TrainingLabel::RAW_DATA[4..8]),
             TrainingImage::COUNT as u32
         );
+    }
+
+    #[test]
+    fn test_counts() {
+        assert_eq!(TestData::images().count(), TestImage::COUNT);
+        assert_eq!(TestData::labels().count(), TestLabel::COUNT);
+        assert_eq!(TrainingData::images().count(), TrainingImage::COUNT);
+        assert_eq!(TrainingData::labels().count(), TrainingLabel::COUNT);
     }
 }
