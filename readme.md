@@ -7,19 +7,31 @@ add the following to your `Cargo.toml`
 mnist_dataset = { git = "https://github.com/daniel-j-anderson-dev/mnist_dataset.git" }
 ```
 
-The dataset is accessed through the following types, which are handles to a specific image/label.
+The dataset is accessed through the following
+- `DataSet` trait
+  - implemented by `TrainingData` and `TestData`
+  - abstracts between the training and testing data sets
+  - gives access to the following iterators
+    - `data_set.images()`
+      - yields `[f32; IMAGE_SIZE]` for each datum
+      - each image array is row major gray-scale values between 0.0(white) and 1.0(black)
+    - `data_set.labels()`
+      - yields `[f32; DigitClass::COUNT]` for each datum
+      - [one hot encoded](https://en.wikipedia.org/wiki/One-hot) `DigitClass`
+- types for handles to a specific image/label.
   - `TrainingImage`
   - `TrainingLabel`
   - `TestImage`
   - `TestLabel`
 
+
 Accessing the actual image data/image label is definiens using these traits
-  - `Image`
-    - implemented by `TrainingImage` and `TestImage`
-    - use `image.as_bytes()` to get the `784` row major bytes of image data specified by an image handle
-  - `Label`
-    - implemented by `TrainingLabel` and `TestLabel`
-    - use `label.digit_class()` to get the `DigitClass` specified by a label handle
+- `Image`
+  - implemented by `TrainingImage` and `TestImage`
+  - use `image.as_bytes()` to get the `784` row major bytes of image data specified by an image handle
+- `Label`
+  - implemented by `TrainingLabel` and `TestLabel`
+  - use `label.digit_class()` to get the `DigitClass` specified by a label handle
 
 # Visualization
 See the `mnist_dataset::visualization` module has several test to generate viewable images from the MNIST dataset
