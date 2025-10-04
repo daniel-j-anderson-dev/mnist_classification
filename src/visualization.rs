@@ -1,4 +1,4 @@
-use crate::{Image, IMAGE_WIDTH};
+use crate::{image::IMAGE_WIDTH, Image};
 
 pub fn to_ascii_art(image: impl Image) -> String {
     let index = image.index();
