@@ -1,3 +1,4 @@
+/// The possible classes of digits in the MNIST dataset
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DigitClass {
     Zero,
@@ -12,6 +13,7 @@ pub enum DigitClass {
     Nine,
 }
 impl DigitClass {
+    /// The number of classes of digits
     pub const COUNT: usize = 10;
     pub const fn from_byte(b: u8) -> Option<Self> {
         match b {
@@ -28,6 +30,7 @@ impl DigitClass {
             _ => None,
         }
     }
+    /// see https://en.wikipedia.org/wiki/One-hot
     pub const fn one_hot_encode(self) -> [f64; 10] {
         let mut encoded = [0.0; 10];
         encoded[self as usize] = 1.0;

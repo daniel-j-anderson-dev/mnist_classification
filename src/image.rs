@@ -40,6 +40,7 @@ pub trait Image: Sized {
             .expect("end - start == IMAGE_SIZE")
     }
 
+    /// Returns the image data where each pixel scaled to be on the range `0.0..=1.0`
     fn normalized(&self) -> [f64; IMAGE_SIZE] {
         let image_data = self.as_bytes();
         core::array::from_fn::<_, IMAGE_SIZE, _>(|i| image_data[i] as f64 / 255.0)
