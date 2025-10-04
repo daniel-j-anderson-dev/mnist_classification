@@ -27,7 +27,7 @@ dataset downloaded from: https://github.com/mrgloom/MNIST-dataset-in-different-f
 
 information about the dataset: https://yann.lecun.com/exdb/mnist/ (dead link). 
 
-From the Wayback Machine:
+From the Wayback Machine of https://yann.lecun.com/exdb/mnist/:
 ## FILE FORMATS FOR THE MNIST DATABASE
 The data is stored in a very simple file format designed for storing vectors and multidimensional matrices. General info on this format is given at the end of this page, but you don't need to read that to use the data files.
 
