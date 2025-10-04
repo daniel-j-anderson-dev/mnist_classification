@@ -1,4 +1,5 @@
-//! https://yann.lecun.com/exdb/mnist/
+//! 
+//! 
 
 pub mod digit_class;
 pub mod image;
