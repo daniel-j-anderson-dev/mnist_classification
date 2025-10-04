@@ -1,4 +1,4 @@
-use crate::dataset::{Image, IMAGE_WIDTH};
+use crate::{Image, IMAGE_WIDTH};
 
 pub fn to_ascii_art(image: impl Image) -> String {
     let index = image.index();
@@ -33,7 +33,7 @@ fn to_string(
 
 #[cfg(test)]
 mod test {
-    use crate::dataset::{display::*, Image, TestImage, TrainingImage};
+    use crate::{display::*, Image, TestImage, TrainingImage};
     use std::{fs::File, io::Write, path::Path};
 
     fn create_directory_if_doesnt_exist(path: impl AsRef<Path>) {
