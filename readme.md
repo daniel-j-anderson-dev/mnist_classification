@@ -21,6 +21,11 @@ Accessing the actual image data/image label is definiens using these traits
     - implemented by `TrainingLabel` and `TestLabel`
     - use `label.digit_class()` to get the `DigitClass` specified by a label handle
 
+# Visualization
+See the `mnist_dataset::visualization` module has several test to generate viewable images from the MNIST dataset
+  - `$ cargo test ascii_art` generates two text files that contain ASCII art depictions of the dataset
+  - `$ cargo test pgm` generates a [PGM](https://netpbm.sourceforge.net/doc/pgm.html) image for every image in the dataset
+
 # Information
 
 dataset downloaded from: https://github.com/mrgloom/MNIST-dataset-in-different-formats/tree/master/data/Original%20dataset
