@@ -41,7 +41,7 @@ pub trait Image: Sized {
         (index < Self::COUNT).then(|| unsafe { Self::from_index_unchecked(index) })
     }
 
-    fn as_bytes(self) -> &'static [u8; IMAGE_SIZE] {
+    fn as_bytes(&self) -> &'static [u8; IMAGE_SIZE] {
         let (start, end) = calculate_image_bounds(self.index());
         Self::RAW_DATA[start..end]
             .try_into()

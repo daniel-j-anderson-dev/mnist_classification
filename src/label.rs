@@ -63,7 +63,7 @@ pub trait Label: Sized {
         (index < Self::COUNT).then(|| unsafe { Self::from_index_unchecked(index) })
     }
 
-    fn digit_class(self) -> DigitClass {
+    fn digit_class(&self) -> DigitClass {
         let index = self.index() + LABEL_OFFSET;
         DigitClass::from_byte(Self::RAW_DATA[index])
             .expect("all bytes after LABEL_OFFSET are in range 0..=9")
