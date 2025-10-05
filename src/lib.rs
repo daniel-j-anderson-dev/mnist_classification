@@ -111,6 +111,7 @@ pub struct Datum {
 pub trait DataSet {
     type Image: Image;
     type Label: Label;
+    const COUNT: usize = Self::Image::COUNT;
     fn images() -> impl Iterator<Item = [f32; IMAGE_SIZE]> {
         Self::Image::all().map(|image| normalize_bytes(image.as_bytes()))
     }
