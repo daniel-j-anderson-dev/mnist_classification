@@ -102,6 +102,9 @@ pub mod visualization;
 
 pub use crate::{image::*, label::*};
 
+#[cfg(feature = "ndarray")]
+use ndarray::Array2;
+
 pub struct Datum {
     pub input: [f32; IMAGE_SIZE],
     pub expected_output: [f32; DigitClass::COUNT],
@@ -127,6 +130,15 @@ pub trait DataSet {
                 digit_class: label.digit_class(),
             })
     }
+
+    #[cfg(feature = "ndarray")]
+    fn input_matrices() -> impl Iterator<Item = Array2<f32>> {
+        Self::images().map(|image| Array2::from_shape_fn((IMAGE_SIZE, 1), |(i, _)| image[i]))
+    }
+    #[cfg(feature = "ndarray")]
+    fn output_matrices() -> impl Iterator<Item = Array2<f32>> {
+        Self::labels().map(|label| Array2::from_shape_fn((DigitClass::COUNT, 1), |(i, _)| label[i]))
+    }
 }
 pub enum TrainingData {}
 impl DataSet for TrainingData {
@@ -142,11 +154,11 @@ impl DataSet for TestData {
 #[cfg(test)]
 mod test {
     use crate::{
-        DataSet, Image, Label, TestData, TestImage, TestLabel, TrainingData, TrainingImage,
-        TrainingLabel,
-        image::{IMAGE_HEIGHT, IMAGE_MAGIC_NUMBER, IMAGE_WIDTH},
-        label::LABEL_MAGIC_NUMBER,
+        DataSet, IMAGE_HEIGHT, IMAGE_MAGIC_NUMBER, IMAGE_WIDTH, Image, LABEL_MAGIC_NUMBER, Label,
+        TestData, TestImage, TestLabel, TrainingData, TrainingImage, TrainingLabel,
     };
+    #[cfg(feature = "ndarray")]
+    use crate::{DigitClass, IMAGE_SIZE};
 
     const fn u32_from_big_endian_bytes(bytes: &[u8]) -> u32 {
         (bytes[0] as u32) << 24
@@ -225,5 +237,34 @@ mod test {
         assert_eq!(TestData::labels().count(), TestLabel::COUNT);
         assert_eq!(TrainingData::images().count(), TrainingImage::COUNT);
         assert_eq!(TrainingData::labels().count(), TrainingLabel::COUNT);
+    }
+
+    #[cfg(feature = "ndarray")]
+    #[test]
+    fn input_matrices_well_formed() {
+        for x in TrainingData::input_matrices().chain(TestData::input_matrices()) {
+            // ensure x is a column vector
+            assert_eq!(x.nrows(), IMAGE_SIZE);
+            assert_eq!(x.ncols(), 1);
+
+            // ensure all elements of x are in 0.0..=1.0
+            for &element in x.iter() {
+                assert!(0.0 <= element && element <= 1.0);
+            }
+        }
+    }
+    #[cfg(feature = "ndarray")]
+    #[test]
+    fn output_matrices_well_formed() {
+        for y in TrainingData::output_matrices().chain(TestData::output_matrices()) {
+            // ensure y is a column vector
+            assert_eq!(y.nrows(), DigitClass::COUNT);
+            assert_eq!(y.ncols(), 1);
+
+            // ensure all elements of y are in 0.0..=1.0
+            for &element in y.iter() {
+                assert!(0.0 <= element && element <= 1.0);
+            }
+        }
     }
 }
