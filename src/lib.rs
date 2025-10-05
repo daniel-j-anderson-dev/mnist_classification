@@ -103,7 +103,7 @@ pub mod visualization;
 pub use crate::{image::*, label::*};
 
 #[cfg(feature = "ndarray")]
-use ndarray::Array2;
+use ndarray::{Array, Array3};
 
 pub struct Datum {
     pub input: [f32; IMAGE_SIZE],
@@ -132,12 +132,22 @@ pub trait DataSet {
     }
 
     #[cfg(feature = "ndarray")]
-    fn input_matrices() -> impl Iterator<Item = Array2<f32>> {
-        Self::images().map(|image| Array2::from_shape_fn((IMAGE_SIZE, 1), |(i, _)| image[i]))
+    /// Shape = `(Self::Image::COUNT, IMAGE_SIZE, 1)`
+    fn inputs() -> Array3<f32> {
+        let images = Self::images().collect::<Box<_>>();
+        Array::from_shape_fn(
+            (Self::Image::COUNT, IMAGE_SIZE, 1),
+            |(image_index, pixel_index, _)| images[image_index][pixel_index],
+        )
     }
     #[cfg(feature = "ndarray")]
-    fn output_matrices() -> impl Iterator<Item = Array2<f32>> {
-        Self::labels().map(|label| Array2::from_shape_fn((DigitClass::COUNT, 1), |(i, _)| label[i]))
+    /// Shape = `(Self::Label::COUNT, DigitClass::COUNT, 1)`
+    fn outputs() -> Array3<f32> {
+        let labels = Self::labels().collect::<Box<_>>();
+        Array::from_shape_fn(
+            (Self::Label::COUNT, DigitClass::COUNT, 1),
+            |(label_index, digit_index, _)| labels[label_index][digit_index],
+        )
     }
 }
 pub enum TrainingData {}
@@ -159,6 +169,8 @@ mod test {
     };
     #[cfg(feature = "ndarray")]
     use crate::{DigitClass, IMAGE_SIZE};
+    #[cfg(feature = "ndarray")]
+    use ndarray::Axis;
 
     const fn u32_from_big_endian_bytes(bytes: &[u8]) -> u32 {
         (bytes[0] as u32) << 24
@@ -242,7 +254,10 @@ mod test {
     #[cfg(feature = "ndarray")]
     #[test]
     fn input_matrices_well_formed() {
-        for x in TrainingData::input_matrices().chain(TestData::input_matrices()) {
+        for x in TrainingData::inputs()
+            .axis_iter(Axis(0))
+            .chain(TestData::outputs().axis_iter(Axis(0)))
+        {
             // ensure x is a column vector
             assert_eq!(x.nrows(), IMAGE_SIZE);
             assert_eq!(x.ncols(), 1);
@@ -256,7 +271,10 @@ mod test {
     #[cfg(feature = "ndarray")]
     #[test]
     fn output_matrices_well_formed() {
-        for y in TrainingData::output_matrices().chain(TestData::output_matrices()) {
+        for y in TrainingData::outputs()
+            .axis_iter(Axis(0))
+            .chain(TestData::outputs().axis_iter(Axis(0)))
+        {
             // ensure y is a column vector
             assert_eq!(y.nrows(), DigitClass::COUNT);
             assert_eq!(y.ncols(), 1);
