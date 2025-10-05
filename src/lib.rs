@@ -105,12 +105,6 @@ pub use crate::{image::*, label::*};
 #[cfg(feature = "ndarray")]
 use ndarray::{Array, Array3};
 
-pub struct Datum {
-    pub input: [f32; IMAGE_SIZE],
-    pub expected_output: [f32; DigitClass::COUNT],
-    pub digit_class: DigitClass,
-}
-
 pub trait DataSet {
     type Image: Image;
     type Label: Label;
@@ -120,15 +114,6 @@ pub trait DataSet {
     }
     fn labels() -> impl Iterator<Item = [f32; DigitClass::COUNT]> {
         Self::Label::all().map(|label| label.digit_class().one_hot_encode())
-    }
-    fn all() -> impl Iterator<Item = Datum> {
-        Self::Image::all()
-            .zip(Self::Label::all())
-            .map(|(image, label)| Datum {
-                input: normalize_bytes(image.as_bytes()),
-                expected_output: label.digit_class().one_hot_encode(),
-                digit_class: label.digit_class(),
-            })
     }
 
     #[cfg(feature = "ndarray")]
