@@ -103,7 +103,7 @@ pub mod visualization;
 pub use crate::{image::*, label::*};
 
 #[cfg(feature = "ndarray")]
-use ndarray::{Array, Array3};
+use ndarray::{Array, Array2};
 
 pub trait DataSet {
     type Image: Image;
@@ -118,20 +118,20 @@ pub trait DataSet {
 
     #[cfg(feature = "ndarray")]
     /// Shape = `(Self::Image::COUNT, IMAGE_SIZE, 1)`
-    fn inputs() -> Array3<f32> {
+    fn inputs() -> Array2<f32> {
         let images = Self::images().collect::<Box<_>>();
         Array::from_shape_fn(
-            (Self::Image::COUNT, IMAGE_SIZE, 1),
-            |(image_index, pixel_index, _)| images[image_index][pixel_index],
+            (Self::Image::COUNT, IMAGE_SIZE),
+            |(image_index, pixel_index)| images[image_index][pixel_index],
         )
     }
     #[cfg(feature = "ndarray")]
     /// Shape = `(Self::Label::COUNT, DigitClass::COUNT, 1)`
-    fn outputs() -> Array3<f32> {
+    fn outputs() -> Array2<f32> {
         let labels = Self::labels().collect::<Box<_>>();
         Array::from_shape_fn(
-            (Self::Label::COUNT, DigitClass::COUNT, 1),
-            |(label_index, digit_index, _)| labels[label_index][digit_index],
+            (Self::Label::COUNT, DigitClass::COUNT),
+            |(label_index, digit_index)| labels[label_index][digit_index],
         )
     }
 }
@@ -239,13 +239,9 @@ mod test {
     #[cfg(feature = "ndarray")]
     #[test]
     fn input_matrices_well_formed() {
-        for x in TrainingData::inputs()
-            .axis_iter(Axis(0))
-            .chain(TestData::outputs().axis_iter(Axis(0)))
-        {
+        for x in TrainingData::inputs().axis_iter(Axis(0)) {
             // ensure x is a column vector
-            assert_eq!(x.nrows(), IMAGE_SIZE);
-            assert_eq!(x.ncols(), 1);
+            assert_eq!(x.len(), IMAGE_SIZE);
 
             // ensure all elements of x are in 0.0..=1.0
             for &element in x.iter() {
@@ -256,13 +252,9 @@ mod test {
     #[cfg(feature = "ndarray")]
     #[test]
     fn output_matrices_well_formed() {
-        for y in TrainingData::outputs()
-            .axis_iter(Axis(0))
-            .chain(TestData::outputs().axis_iter(Axis(0)))
-        {
+        for y in TrainingData::outputs().axis_iter(Axis(0)) {
             // ensure y is a column vector
-            assert_eq!(y.nrows(), DigitClass::COUNT);
-            assert_eq!(y.ncols(), 1);
+            assert_eq!(y.len(), DigitClass::COUNT);
 
             // ensure all elements of y are in 0.0..=1.0
             for &element in y.iter() {
