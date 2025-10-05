@@ -102,6 +102,11 @@ pub mod visualization;
 
 pub use crate::{image::*, label::*};
 
+pub struct Datum {
+    pub image: [f32; IMAGE_SIZE],
+    pub label: [f32; DigitClass::COUNT],
+}
+
 pub trait DataSet {
     type Image: Image;
     type Label: Label;
@@ -112,6 +117,11 @@ pub trait DataSet {
         Self::Label::all()
             .map(Label::digit_class)
             .map(DigitClass::one_hot_encode)
+    }
+    fn all() -> impl Iterator<Item = Datum> {
+        Self::images()
+            .zip(Self::labels())
+            .map(|(image, label)| Datum { image, label })
     }
 }
 pub enum TrainingData {}
