@@ -109,30 +109,43 @@ pub trait DataSet {
     type Image: Image;
     type Label: Label;
     const COUNT: usize = Self::Image::COUNT;
-    fn images() -> impl Iterator<Item = [f32; IMAGE_SIZE]> {
-        Self::Image::all().map(|image| normalize_bytes(image.as_bytes()))
+    fn images() -> impl Iterator<Item = Self::Image> {
+        Self::Image::all()
     }
-    fn labels() -> impl Iterator<Item = [f32; DigitClass::COUNT]> {
-        Self::Label::all().map(|label| label.digit_class().one_hot_encode())
+    fn labels() -> impl Iterator<Item = Self::Label> {
+        Self::Label::all()
+    }
+    fn images_normalized() -> impl Iterator<Item = [f32; IMAGE_SIZE]> {
+        Self::images().map(|image| normalize_bytes(image.as_bytes()))
+    }
+    fn labels_one_hot_encoded() -> impl Iterator<Item = [f32; DigitClass::COUNT]> {
+        Self::labels().map(|label| label.digit_class().one_hot_encode())
+    }
+
+    /// Shape = `(Self::Image::COUNT, IMAGE_SIZE, 1)`
+    #[cfg(feature = "ndarray")]
+    fn input_column_vectors() -> impl Iterator<Item = Array2<f32>> {
+        Self::images_normalized().map(|image| {
+            Array::from_shape_fn(
+                (IMAGE_SIZE, 1), //
+                |(i, _)| image[i],
+            )
+        })
+    }
+    /// Shape = `(Self::Label::COUNT, DigitClass::COUNT, 1)`
+    #[cfg(feature = "ndarray")]
+    fn output_column_vectors() -> impl Iterator<Item = Array2<f32>> {
+        Self::labels_one_hot_encoded().map(|label| {
+            Array::from_shape_fn(
+                (DigitClass::COUNT, 1), //
+                |(i, _)| label[i],
+            )
+        })
     }
 
     #[cfg(feature = "ndarray")]
-    /// Shape = `(Self::Image::COUNT, IMAGE_SIZE, 1)`
-    fn inputs() -> Array2<f32> {
-        let images = Self::images().collect::<Box<_>>();
-        Array::from_shape_fn(
-            (Self::Image::COUNT, IMAGE_SIZE),
-            |(image_index, pixel_index)| images[image_index][pixel_index],
-        )
-    }
-    #[cfg(feature = "ndarray")]
-    /// Shape = `(Self::Label::COUNT, DigitClass::COUNT, 1)`
-    fn outputs() -> Array2<f32> {
-        let labels = Self::labels().collect::<Box<_>>();
-        Array::from_shape_fn(
-            (Self::Label::COUNT, DigitClass::COUNT),
-            |(label_index, digit_index)| labels[label_index][digit_index],
-        )
+    fn input_output_column_vectors() -> impl Iterator<Item = (Array2<f32>, Array2<f32>)> {
+        Self::input_column_vectors().zip(Self::output_column_vectors())
     }
 }
 pub enum TrainingData {}
@@ -230,10 +243,16 @@ mod test {
 
     #[test]
     fn test_counts() {
-        assert_eq!(TestData::images().count(), TestImage::COUNT);
-        assert_eq!(TestData::labels().count(), TestLabel::COUNT);
-        assert_eq!(TrainingData::images().count(), TrainingImage::COUNT);
-        assert_eq!(TrainingData::labels().count(), TrainingLabel::COUNT);
+        assert_eq!(TestData::images_normalized().count(), TestImage::COUNT);
+        assert_eq!(TestData::labels_one_hot_encoded().count(), TestLabel::COUNT);
+        assert_eq!(
+            TrainingData::images_normalized().count(),
+            TrainingImage::COUNT
+        );
+        assert_eq!(
+            TrainingData::labels_one_hot_encoded().count(),
+            TrainingLabel::COUNT
+        );
     }
 
     #[cfg(feature = "ndarray")]
