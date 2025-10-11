@@ -144,6 +144,7 @@ pub trait DataSet {
     }
 
     #[cfg(feature = "ndarray")]
+    /// yields: [Array2D] of Shape = `(Self::Label::COUNT, DigitClass::COUNT, 1)`
     fn input_output_column_vectors() -> impl Iterator<Item = (Array2<f32>, Array2<f32>)> {
         Self::input_column_vectors().zip(Self::output_column_vectors())
     }
