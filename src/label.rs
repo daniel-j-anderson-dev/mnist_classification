@@ -33,15 +33,52 @@ impl DigitClass {
         }
     }
     /// see https://en.wikipedia.org/wiki/One-hot
+    #[rustfmt::skip]
     pub const fn one_hot_encode(self) -> [f32; 10] {
-        let mut encoded = [0.0; 10];
-        encoded[self as usize] = 1.0;
-        encoded
+        match self {
+            Self::Zero  => Self::ZERO,
+            Self::One   => Self::ONE,
+            Self::Two   => Self::TWO,
+            Self::Three => Self::THREE,
+            Self::Four  => Self::FOUR,
+            Self::Five  => Self::FIVE,
+            Self::Six   => Self::SIX,
+            Self::Seven => Self::SEVEN,
+            Self::Eight => Self::EIGHT,
+            Self::Nine  => Self::NINE,
+        }
     }
+
+    pub const ZERO: [f32; DigitClass::COUNT] = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    pub const ONE: [f32; DigitClass::COUNT] = [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    pub const TWO: [f32; DigitClass::COUNT] = [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    pub const THREE: [f32; DigitClass::COUNT] = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    pub const FOUR: [f32; DigitClass::COUNT] = [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    pub const FIVE: [f32; DigitClass::COUNT] = [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0];
+    pub const SIX: [f32; DigitClass::COUNT] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0];
+    pub const SEVEN: [f32; DigitClass::COUNT] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0];
+    pub const EIGHT: [f32; DigitClass::COUNT] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0];
+    pub const NINE: [f32; DigitClass::COUNT] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0];
 }
 impl From<DigitClass> for usize {
     fn from(value: DigitClass) -> Self {
         value as usize
+    }
+}
+impl From<[f32; DigitClass::COUNT]> for DigitClass {
+    fn from(value: [f32; DigitClass::COUNT]) -> Self {
+        match value {
+            Self::ZERO => Self::Zero,
+            Self::ONE => Self::One,
+            Self::TWO => Self::Two,
+            Self::THREE => Self::Three,
+            Self::FOUR => Self::Four,
+            Self::FIVE => Self::Five,
+            Self::SIX => Self::Six,
+            Self::SEVEN => Self::Seven,
+            Self::EIGHT => Self::Eight,
+            _ => Self::Nine,
+        }
     }
 }
 
