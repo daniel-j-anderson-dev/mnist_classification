@@ -8,7 +8,7 @@ pub use crate::{image::*, label::*};
 use ndarray::{Array, Array2};
 
 #[cfg(feature = "burn")]
-mod burn_interop;
+pub mod burn_interop;
 
 pub trait DataSet {
     type Image: Image;
