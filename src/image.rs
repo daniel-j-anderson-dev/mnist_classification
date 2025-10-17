@@ -47,6 +47,12 @@ pub trait Image: Sized {
             .try_into()
             .expect("end - start == IMAGE_SIZE")
     }
+    fn to_array(&self) -> [u8; IMAGE_SIZE] {
+        self.as_bytes().to_owned()
+    }
+    fn to_vec(&self) -> Vec<u8> {
+        self.as_bytes().to_vec()
+    }
 
     fn all() -> impl Iterator<Item = Self> {
         (0..Self::COUNT).filter_map(Self::from_index)
