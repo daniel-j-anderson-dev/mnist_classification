@@ -18,6 +18,11 @@ pub struct MnistBatch<B: Backend> {
 
 #[derive(Debug, Clone, Copy)]
 pub struct MnistBatcher<D: DataSet>(PhantomData<D>);
+impl<D: DataSet> MnistBatcher<D> {
+    pub const fn new() -> Self {
+        Self(PhantomData)
+    }
+}
 impl<B, D> Batcher<B, (D::Image, D::Label), MnistBatch<B>> for MnistBatcher<D>
 where
     B: Backend,
