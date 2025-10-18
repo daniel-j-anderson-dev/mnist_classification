@@ -17,14 +17,17 @@ pub struct MnistBatch<B: Backend> {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub struct MnistBatcher;
-impl<B, Image, Label> Batcher<B, (Image, Label), MnistBatch<B>> for MnistBatcher
+pub struct MnistBatcher<D: DataSet>(PhantomData<D>);
+impl<B, D> Batcher<B, (D::Image, D::Label), MnistBatch<B>> for MnistBatcher<D>
 where
     B: Backend,
-    Image: crate::Image,
-    Label: crate::Label,
+    D: DataSet + Send + Sync,
 {
-    fn batch(&self, items: Vec<(Image, Label)>, device: &<B as Backend>::Device) -> MnistBatch<B> {
+    fn batch(
+        &self,
+        items: Vec<(D::Image, D::Label)>,
+        device: &<B as Backend>::Device,
+    ) -> MnistBatch<B> {
         let images = items
             .iter()
             .map(|(image, _)| image.to_array())
@@ -45,16 +48,10 @@ where
     }
 }
 
-pub struct MnistDataset<D: DataSet> {
-    items: Vec<(D::Image, D::Label)>,
-    _marker: PhantomData<D>,
-}
+pub struct MnistDataset<D: DataSet>(PhantomData<D>);
 impl<D: DataSet> MnistDataset<D> {
     pub fn new() -> Self {
-        Self {
-            items: D::all().collect(),
-            _marker: PhantomData,
-        }
+        Self(PhantomData)
     }
 }
 impl<D> burn::data::dataloader::Dataset<(D::Image, D::Label)> for MnistDataset<D>
@@ -64,9 +61,10 @@ where
     D::Label: Send + Sync + Copy,
 {
     fn get(&self, i: usize) -> Option<(D::Image, D::Label)> {
-        self.items.get(i).copied()
+        D::Image::from_index(i)
+            .and_then(|image| D::Label::from_index(i).map(|label| (image, label)))
     }
     fn len(&self) -> usize {
-        self.items.len()
+        D::COUNT
     }
 }
