@@ -1,4 +1,6 @@
-use crate::{DataSet, TestData, TrainingData};
+use crate::*;
+
+use core::marker::PhantomData;
 
 use burn::{data::dataloader::batcher::Batcher, prelude::*};
 
@@ -43,22 +45,22 @@ where
     }
 }
 
-pub type Datum<B> = (Tensor<B, 2>, Tensor<B, 1>);
-
-pub struct MnistDataset<B: Backend>(Vec<Datum<B>>);
-impl<B: Backend> MnistDataset<B> {
-    pub fn training(device: &B::Device) -> Self {
-        Self(TrainingData::input_output_tensors(device).collect())
-    }
-    pub fn testing(device: &B::Device) -> Self {
-        Self(TestData::input_output_tensors(device).collect())
+pub struct MnistDataset<D: DataSet> {
+    items: Vec<(D::Image, D::Label)>,
+    _marker: PhantomData<D>,
+}
+impl<D: DataSet> MnistDataset<D> {
+    pub fn new() -> Self {
+        Self(D::all().collect())
     }
 }
-impl<B: Backend> burn::data::dataloader::Dataset<Datum<B>> for MnistDataset<B> {
-    fn get(&self, i: usize) -> Option<Datum<B>> {
-        self.0.get(i).cloned()
+impl<B: Backend, D: DataSet> burn::data::dataloader::Dataset<(D::Image, D::Label)>
+    for MnistDataset<B>
+{
+    fn get(&self, i: usize) -> Option<(D::Image, D::Label)> {
+        self.items.get(i).cloned()
     }
     fn len(&self) -> usize {
-        self.0.len()
+        self.items.len()
     }
 }

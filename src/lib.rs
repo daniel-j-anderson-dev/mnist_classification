@@ -29,6 +29,9 @@ pub trait DataSet {
     fn labels_one_hot_encoded() -> impl Iterator<Item = [f32; DigitClass::COUNT]> {
         Self::labels().map(|label| label.digit_class().one_hot_encode())
     }
+    fn all() -> impl Iterator<Item = (Self::Image, Self::Label)> {
+        Self::images().zip(Self::labels())
+    }
 
     /// Shape = `(Self::Image::COUNT, IMAGE_SIZE, 1)`
     #[cfg(feature = "ndarray")]
