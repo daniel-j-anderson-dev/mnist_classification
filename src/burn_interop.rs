@@ -51,14 +51,20 @@ pub struct MnistDataset<D: DataSet> {
 }
 impl<D: DataSet> MnistDataset<D> {
     pub fn new() -> Self {
-        Self(D::all().collect())
+        Self {
+            items: D::all().collect(),
+            _marker: PhantomData,
+        }
     }
 }
-impl<B: Backend, D: DataSet> burn::data::dataloader::Dataset<(D::Image, D::Label)>
-    for MnistDataset<B>
+impl<D> burn::data::dataloader::Dataset<(D::Image, D::Label)> for MnistDataset<D>
+where
+    D: DataSet + Send + Sync,
+    D::Image: Send + Sync + Copy,
+    D::Label: Send + Sync + Copy,
 {
     fn get(&self, i: usize) -> Option<(D::Image, D::Label)> {
-        self.items.get(i).cloned()
+        self.items.get(i).copied()
     }
     fn len(&self) -> usize {
         self.items.len()
