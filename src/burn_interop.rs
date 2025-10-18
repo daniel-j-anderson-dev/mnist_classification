@@ -16,7 +16,7 @@ pub struct MnistBatch<B: Backend> {
     pub labels: Tensor<B, 1, Int>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct MnistBatcher;
 impl<B, Image, Label> Batcher<B, (Image, Label), MnistBatch<B>> for MnistBatcher
 where
