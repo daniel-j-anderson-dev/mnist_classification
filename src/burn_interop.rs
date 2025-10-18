@@ -1,3 +1,5 @@
+use crate::{DataSet, TestData, TrainingData};
+
 use burn::{data::dataloader::batcher::Batcher, prelude::*};
 
 /// - The `0th` index of each [Tensor]: indexes which image/label in this batch
@@ -38,5 +40,25 @@ where
             images: Tensor::cat(images, 0),
             labels: Tensor::cat(labels, 0),
         }
+    }
+}
+
+pub type Datum<B> = (Tensor<B, 2>, Tensor<B, 1>);
+
+pub struct MnistDataset<B: Backend>(Vec<Datum<B>>);
+impl<B: Backend> MnistDataset<B> {
+    pub fn training(device: &B::Device) -> Self {
+        Self(TrainingData::input_output_tensors(device).collect())
+    }
+    pub fn testing(device: &B::Device) -> Self {
+        Self(TestData::input_output_tensors(device).collect())
+    }
+}
+impl<B: Backend> burn::data::dataloader::Dataset<Datum<B>> for MnistDataset<B> {
+    fn get(&self, i: usize) -> Option<Datum<B>> {
+        self.0.get(i).cloned()
+    }
+    fn len(&self) -> usize {
+        self.0.len()
     }
 }

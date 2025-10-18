@@ -2,13 +2,16 @@ pub mod image;
 pub mod label;
 pub mod visualization;
 
+#[cfg(feature = "burn")]
+pub mod burn_interop;
+
 pub use crate::{image::*, label::*};
+
+#[cfg(feature = "burn")]
+use burn::prelude::*;
 
 #[cfg(feature = "ndarray")]
 use ndarray::{Array, Array2};
-
-#[cfg(feature = "burn")]
-pub mod burn_interop;
 
 pub trait DataSet {
     type Image: Image;
@@ -53,12 +56,33 @@ pub trait DataSet {
     fn input_output_column_vectors() -> impl Iterator<Item = (Array2<f32>, Array2<f32>)> {
         Self::input_column_vectors().zip(Self::output_column_vectors())
     }
+
+    #[cfg(feature = "burn")]
+    fn input_output_tensors<B: Backend>(
+        device: &B::Device,
+    ) -> impl Iterator<Item = (Tensor<B, 2>, Tensor<B, 1>)> {
+        Self::images()
+            .zip(Self::labels())
+            .map(|(image, label)| {
+                (
+                    image.to_array(),
+                    [(label.digit_class() as i64).elem::<B::IntElem>()],
+                )
+            })
+            .map(|(image_data, label_data)| {
+                (
+                    Tensor::from_data(image_data, device),
+                    Tensor::from_data(label_data, device),
+                )
+            })
+    }
 }
 pub enum TrainingData {}
 impl DataSet for TrainingData {
     type Image = TrainingImage;
     type Label = TrainingLabel;
 }
+
 pub enum TestData {}
 impl DataSet for TestData {
     type Image = TestImage;
